@@ -1,3 +1,4 @@
+import { SESSION_STORAGE_KEY } from '@/constants'
 import axios from 'axios'
 const BASE_URL = "https://api.escuelajs.co/api/v1"
 
@@ -18,10 +19,23 @@ export const createSession = async (params: SessionParams): Promise<Token> => {
     return data
 }
 
-export const getProducts = async (token: string): Promise<Product[]> => {
+export const getProducts = async (): Promise<Product[]> => {
+    const token = window?.localStorage.getItem(SESSION_STORAGE_KEY);
+    const parsedToken = JSON.parse(token || '{}') as Token;
     const { data } = await axios.get(`${BASE_URL}/products`, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${parsedToken.access_token}`
+        }
+    })
+    return data
+}
+
+export const getProduct = async (id: string): Promise<Product> => {
+    const token = window?.localStorage.getItem(SESSION_STORAGE_KEY);
+    const parsedToken = JSON.parse(token || '{}') as Token;
+    const { data } = await axios.get(`${BASE_URL}/products/${id}`, {
+        headers: {
+            Authorization: `Bearer ${parsedToken.access_token}`
         }
     })
     return data

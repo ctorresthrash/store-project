@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import SignUp, { action as signUpAction } from '@/pages/SignUp';
 import Login, { action as loginAction } from '@/pages/Login';
 import UnAuthorized, {
@@ -7,25 +7,29 @@ import UnAuthorized, {
 } from '@/pages/layout/UnAuthorized';
 import Products, { loader as productsLoader } from '@/pages/Products';
 import { loader as authenticateLoader } from '@/pages/Authenticate';
+import queryClient from './services/queryClient';
 
-const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <UnAuthorized />,
     children: [
       {
-        element: <SignUp />,
-        index: true,
-        action: signUpAction,
-        loader: unauthorizedLoader,
-      },
-      {
-        path: 'login',
-        element: <Login />,
-        action: loginAction,
-        loader: unauthorizedLoader,
+        path: '/',
+        element: <UnAuthorized />,
+        children: [
+          {
+            element: <SignUp />,
+            index: true,
+            action: signUpAction,
+            loader: unauthorizedLoader,
+          },
+          {
+            path: 'login',
+            element: <Login />,
+            action: loginAction,
+            loader: unauthorizedLoader,
+          },
+        ],
       },
       {
         loader: authenticateLoader,
